@@ -16,17 +16,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import DownloadIcon from '@mui/icons-material/Download';
 import { groupBy, map, entries } from 'lodash';
 
-const Header = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: theme.spacing(2, 0),
-}));
-
-const Logo = styled(Typography)(({ theme }) => ({
-  fontWeight: 'bold',
-  fontSize: '1.5rem',
-}));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontWeight: 'bold',
@@ -37,16 +26,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.action.hover,
   },
 }));
-
-const StatCard = ({ title, value, change, children }) => (
-  <Paper elevation={0} sx={{ p: 3, height: '100%' }}>
-    <Typography variant="h6" gutterBottom>{title}</Typography>
-    <Typography variant="h4" gutterBottom>{value}</Typography>
-    <Typography variant="body2" color="success.main" sx={{ display: 'flex', alignItems: 'center' }}>
-    </Typography>
-    {children}
-  </Paper>
-);
 
 const fetchSongs = async (page, limit) => {
   const response = await fetch(`/api/songs?page=${page}&limit=${limit}`);
