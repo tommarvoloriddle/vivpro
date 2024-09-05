@@ -5,7 +5,8 @@ import clientPromise from '../../../../lib/mongodb';
 export async function POST(req, { params }) {
   const { id } = params;
   const { stars } = await req.json(); // Expecting { stars: 5 } in request body
-
+  const { updates } = await req.json(); 
+  const { prevStars} = await req.json();
   if (stars < 0 || stars > 5) {
     return NextResponse.json({ error: 'Invalid rating. Must be between 1 and 5.' }, { status: 400 });
   }
@@ -17,7 +18,9 @@ export async function POST(req, { params }) {
 
     const result = await collection.updateOne(
       { id: id },
-      { $set: { rating: stars } }
+      { $set: { rating: (stars + prevStars)/updates } }
+      { $set: { updates: updates + 1} } 
+      { $set: { prevStars: prevStars } }
     );
 
     if (result.matchedCount === 0) {
