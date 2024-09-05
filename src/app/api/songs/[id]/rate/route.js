@@ -5,8 +5,8 @@ import clientPromise from '../../../../lib/mongodb';
 export async function POST(req, { params }) {
   const { id } = params;
   const { stars } = await req.json(); // Expecting { stars: 5 } in request body
-  const { updates } = await req.json(); 
-  const { prevStars} = await req.json();
+  // const { updates } = await req.json(); 
+  // const { prevStars} = await req.json();
   if (stars < 0 || stars > 5) {
     return NextResponse.json({ error: 'Invalid rating. Must be between 1 and 5.' }, { status: 400 });
   }
@@ -16,11 +16,24 @@ export async function POST(req, { params }) {
     const database = client.db('vivpro');
     const collection = database.collection('albums');
 
+    const row = await collection.findOne( {id : id} );
+
+    let updates = 1;
+    if (row.updates) {
+      updates = row.updates + 1;
+    }
+
+    let prevStars = 0;
+
+    if(row.prevStars) {
+      prevStars = row.prevStars;
+    }
+    
     const result = await collection.updateOne(
       { id: id },
       { $set: { rating: (stars + prevStars)/updates } }
       { $set: { updates: updates + 1} } 
-      { $set: { prevStars: prevStars } }
+      { $set: { prevStars: prevStars + stars } }
     );
 
     if (result.matchedCount === 0) {
